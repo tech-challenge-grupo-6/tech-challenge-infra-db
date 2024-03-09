@@ -98,7 +98,7 @@ resource "aws_db_instance" "bancodedados" {
   engine                 = "mysql"
   engine_version         = "8.0.35"
   instance_class         = "db.t3.micro"
-  db_name                = "databaseone"
+  db_name                = "controlador_pedidos"
   username               = "admin"
   password               = "mypassword"
   skip_final_snapshot    = true
