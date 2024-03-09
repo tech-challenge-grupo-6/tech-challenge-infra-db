@@ -1,4 +1,4 @@
-name: Deploy-AWS-DB1
+name: Deploy-AWS-DB
 
 on:
   workflow_dispatch:
