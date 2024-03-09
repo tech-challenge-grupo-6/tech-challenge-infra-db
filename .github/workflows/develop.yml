@@ -4,8 +4,6 @@ on:
   pull_request:
     branches:
       - develop
-    paths:
-      - 'tech-challange-infra-dp'
 
 jobs:
   plan-dev:
