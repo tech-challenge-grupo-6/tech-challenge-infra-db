@@ -1,9 +1,7 @@
 name: Deploy-AWS-DB1
 
 on:
-  pull_request:
-    branches:
-      - develop
+  workflow_dispatch:
 
 jobs:
   plan-dev:
