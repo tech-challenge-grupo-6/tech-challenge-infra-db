@@ -1,4 +1,4 @@
-name: Deploy-AWS-DB
+name: Deploy-AWS-DB1
 
 on:
   pull_request:
