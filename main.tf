@@ -110,3 +110,32 @@ resource "aws_db_instance" "bancodedados" {
     Name = "Instância Banco de Dados"
   }
 }
+
+provider "mysql" {
+  endpoint = aws_db_instance.bancodedados.endpoint
+  username = aws_db_instance.bancodedados.username
+  password = aws_db_instance.bancodedados.password
+}
+
+resource "mysql_database" "payment" {
+  name = "controlador_payment"
+}
+
+resource "mysql_database" "producer" {
+  name = "controlador_producer"
+}
+
+resource "aws_elasticache_cluster" "redis-order" {
+  cluster_id           = "cluster-example"
+  engine               = "redis"
+  node_type            = "cache.t2.micro"
+  num_cache_nodes      = 1
+  parameter_group_name = "default.redis3.2"
+  engine_version       = "3.2.10"
+  port                 = 6379
+  subnet_group_name    = aws_db_subnet_group.db_subnet_group.name
+
+  tags = {
+    "techchallenge" = ""
+  }
+}
