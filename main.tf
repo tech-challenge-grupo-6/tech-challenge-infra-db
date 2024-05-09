@@ -7,7 +7,7 @@ resource "aws_vpc" "vpc_teste" {
   enable_dns_hostnames = true
 
   tags = {
-    Name = "VPC Teste"
+    techchallenge = "VPC Teste"
   }
 }
 
@@ -15,7 +15,7 @@ resource "aws_internet_gateway" "igw" {
   vpc_id = aws_vpc.vpc_teste.id
 
   tags = {
-    Name = "IGW"
+    techchallenge = "IGW"
   }
 }
 
@@ -25,7 +25,7 @@ resource "aws_subnet" "public_subnet_a" {
   availability_zone = "us-east-1a"
 
   tags = {
-    Name = "Subnet Pública A"
+    techchallenge = "Subnet Pública A"
   }
 }
 
@@ -35,7 +35,7 @@ resource "aws_subnet" "public_subnet_b" {
   availability_zone = "us-east-1b"
 
   tags = {
-    Name = "Subnet Pública B"
+    techchallenge = "Subnet Pública B"
   }
 }
 
@@ -48,7 +48,7 @@ resource "aws_route_table" "public_route_table" {
   }
 
   tags = {
-    Name = "Public Route Table"
+    techchallenge = "Public Route Table"
   }
 }
 
@@ -80,7 +80,7 @@ resource "aws_security_group" "db_security_group" {
   }
 
   tags = {
-    Name = "Security Group Banco de Dados"
+    techchallenge = "Security Group Banco de Dados"
   }
 }
 
@@ -89,7 +89,7 @@ resource "aws_db_subnet_group" "db_subnet_group" {
   subnet_ids = [aws_subnet.public_subnet_a.id, aws_subnet.public_subnet_b.id]
 
   tags = {
-    Name = "Meu DB Subnet Group"
+    techchallenge = "Meu DB Subnet Group"
   }
 }
 
@@ -107,7 +107,7 @@ resource "aws_db_instance" "bancodedados" {
   vpc_security_group_ids = [aws_security_group.db_security_group.id]
 
   tags = {
-    Name = "Instância Banco de Dados"
+    techchallenge = "Instância Banco de Dados"
   }
 }
 
@@ -126,7 +126,7 @@ resource "mysql_database" "producer" {
 }
 
 resource "aws_elasticache_cluster" "redis-order" {
-  cluster_id           = "cluster-example"
+  cluster_id           = "controlador-pedidos-cache"
   engine               = "redis"
   node_type            = "cache.t2.micro"
   num_cache_nodes      = 1
@@ -136,6 +136,6 @@ resource "aws_elasticache_cluster" "redis-order" {
   subnet_group_name    = aws_db_subnet_group.db_subnet_group.name
 
   tags = {
-    "techchallenge" = ""
+    techchallenge = "Redis Cache"
   }
 }
