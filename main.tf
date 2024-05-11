@@ -66,6 +66,13 @@ resource "aws_security_group" "db_security_group" {
   vpc_id = aws_vpc.vpc_teste.id
 
   ingress {
+    from_port   = 6379
+    to_port     = 6379
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
     from_port   = 3306
     to_port     = 3306
     protocol    = "tcp"
@@ -93,7 +100,7 @@ resource "aws_db_subnet_group" "db_subnet_group" {
   }
 }
 
-resource "aws_db_instance" "bancodedados" {
+resource "aws_db_instance" "controlador-pedidos" {
   allocated_storage      = 5
   engine                 = "mysql"
   engine_version         = "8.0.35"
@@ -111,18 +118,49 @@ resource "aws_db_instance" "bancodedados" {
   }
 }
 
-provider "mysql" {
-  endpoint = aws_db_instance.bancodedados.endpoint
-  username = aws_db_instance.bancodedados.username
-  password = aws_db_instance.bancodedados.password
-}
+# resource "aws_db_instance" "controlador-pagamentos" {
+#   allocated_storage      = 5
+#   engine                 = "mysql"
+#   engine_version         = "8.0.35"
+#   instance_class         = "db.t3.micro"
+#   db_name                = "controlador_pagamentos"
+#   username               = "admin"
+#   password               = "mypassword"
+#   skip_final_snapshot    = true
+#   publicly_accessible    = true
+#   db_subnet_group_name   = aws_db_subnet_group.db_subnet_group.name
+#   vpc_security_group_ids = [aws_security_group.db_security_group.id]
 
-resource "mysql_database" "payment" {
-  name = "controlador_payment"
-}
+#   tags = {
+#     techchallenge = "Instância Banco de Dados"
+#   }
+# }
 
-resource "mysql_database" "producer" {
-  name = "controlador_producer"
+# resource "aws_db_instance" "controlador-producao" {
+#   allocated_storage      = 5
+#   engine                 = "mysql"
+#   engine_version         = "8.0.35"
+#   instance_class         = "db.t3.micro"
+#   db_name                = "controlador_producao"
+#   username               = "admin"
+#   password               = "mypassword"
+#   skip_final_snapshot    = true
+#   publicly_accessible    = true
+#   db_subnet_group_name   = aws_db_subnet_group.db_subnet_group.name
+#   vpc_security_group_ids = [aws_security_group.db_security_group.id]
+
+#   tags = {
+#     techchallenge = "Instância Banco de Dados"
+#   }
+# }
+
+resource "aws_elasticache_subnet_group" "cache_subnet_group" {
+  name       = "cache-subnet-group"
+  subnet_ids = [aws_subnet.public_subnet_a.id, aws_subnet.public_subnet_b.id]
+
+  tags = {
+    techchallenge = "Cache Subnet Group"
+  }
 }
 
 resource "aws_elasticache_cluster" "redis-order" {
@@ -130,10 +168,11 @@ resource "aws_elasticache_cluster" "redis-order" {
   engine               = "redis"
   node_type            = "cache.t2.micro"
   num_cache_nodes      = 1
-  parameter_group_name = "default.redis3.2"
-  engine_version       = "3.2.10"
+  parameter_group_name = "default.redis7"
+  engine_version       = "7.1"
   port                 = 6379
-  subnet_group_name    = aws_db_subnet_group.db_subnet_group.name
+  subnet_group_name    = aws_elasticache_subnet_group.cache_subnet_group.name
+  security_group_ids   = [aws_security_group.db_security_group.id]
 
   tags = {
     techchallenge = "Redis Cache"
