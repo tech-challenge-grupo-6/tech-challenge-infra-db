@@ -7,7 +7,7 @@ resource "aws_vpc" "vpc_teste" {
   enable_dns_hostnames = true
 
   tags = {
-    Name = "VPC Teste"
+    techchallenge = "VPC Teste"
   }
 }
 
@@ -15,7 +15,7 @@ resource "aws_internet_gateway" "igw" {
   vpc_id = aws_vpc.vpc_teste.id
 
   tags = {
-    Name = "IGW"
+    techchallenge = "IGW"
   }
 }
 
@@ -25,7 +25,7 @@ resource "aws_subnet" "public_subnet_a" {
   availability_zone = "us-east-1a"
 
   tags = {
-    Name = "Subnet Pública A"
+    techchallenge = "Subnet Pública A"
   }
 }
 
@@ -35,7 +35,7 @@ resource "aws_subnet" "public_subnet_b" {
   availability_zone = "us-east-1b"
 
   tags = {
-    Name = "Subnet Pública B"
+    techchallenge = "Subnet Pública B"
   }
 }
 
@@ -48,7 +48,7 @@ resource "aws_route_table" "public_route_table" {
   }
 
   tags = {
-    Name = "Public Route Table"
+    techchallenge = "Public Route Table"
   }
 }
 
@@ -80,7 +80,7 @@ resource "aws_security_group" "db_security_group" {
   }
 
   tags = {
-    Name = "Security Group Banco de Dados"
+    techchallenge = "Security Group Banco de Dados"
   }
 }
 
@@ -89,11 +89,11 @@ resource "aws_db_subnet_group" "db_subnet_group" {
   subnet_ids = [aws_subnet.public_subnet_a.id, aws_subnet.public_subnet_b.id]
 
   tags = {
-    Name = "Meu DB Subnet Group"
+    techchallenge = "Meu DB Subnet Group"
   }
 }
 
-resource "aws_db_instance" "bancodedados" {
+resource "aws_db_instance" "controlador-pedidos" {
   allocated_storage      = 5
   engine                 = "mysql"
   engine_version         = "8.0.35"
@@ -107,6 +107,42 @@ resource "aws_db_instance" "bancodedados" {
   vpc_security_group_ids = [aws_security_group.db_security_group.id]
 
   tags = {
-    Name = "Instância Banco de Dados"
+    techchallenge = "Instância Banco de Dados"
+  }
+}
+
+resource "aws_db_instance" "controlador-pagamentos" {
+  allocated_storage      = 5
+  engine                 = "mysql"
+  engine_version         = "8.0.35"
+  instance_class         = "db.t3.micro"
+  db_name                = "controlador_pagamentos"
+  username               = "admin"
+  password               = "mypassword"
+  skip_final_snapshot    = true
+  publicly_accessible    = true
+  db_subnet_group_name   = aws_db_subnet_group.db_subnet_group.name
+  vpc_security_group_ids = [aws_security_group.db_security_group.id]
+
+  tags = {
+    techchallenge = "Instância Banco de Dados"
+  }
+}
+
+resource "aws_db_instance" "controlador-producao" {
+  allocated_storage      = 5
+  engine                 = "mysql"
+  engine_version         = "8.0.35"
+  instance_class         = "db.t3.micro"
+  db_name                = "controlador_producao"
+  username               = "admin"
+  password               = "mypassword"
+  skip_final_snapshot    = true
+  publicly_accessible    = true
+  db_subnet_group_name   = aws_db_subnet_group.db_subnet_group.name
+  vpc_security_group_ids = [aws_security_group.db_security_group.id]
+
+  tags = {
+    techchallenge = "Instância Banco de Dados"
   }
 }
